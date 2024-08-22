@@ -1,3 +1,5 @@
+@import './fonts.css';
+
 .theme-dark {
     --c-bg: hsl(240, 21%, 15%);
     --c-bg-dim: hsl(240, 15%, 10%);

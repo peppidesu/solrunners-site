@@ -9,5 +9,7 @@ use solrunners_site::routes;
 #[launch]
 fn rocket() -> _ {
     rocket::build()
-        .mount_router("/", routes::router())
+        // PathBuf joins two "/" into "//". This would work fine but is a bit ugly.
+        // Instead, we use the hacky solution of mouting the router to "".
+        .mount_router("", routes::router())
 }

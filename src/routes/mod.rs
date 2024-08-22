@@ -28,6 +28,7 @@ fn index() -> Result<(ContentType, String), status::Custom<&'static str>> {
     Ok((ContentType::HTML, rendered))   
 }
 
+/// Router for the root path
 pub fn router() -> Router {
     Router::new("/", routes![
         index
