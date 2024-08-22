@@ -24,7 +24,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: Linting
       run: |
-        cargo clippy \
+        cargo clippy -- \
           -D clippy::missing_panics_doc \
           -D clippy::missing_errors_doc \
           -D clippy::missing_safety_doc \
