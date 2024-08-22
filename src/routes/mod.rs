@@ -40,6 +40,7 @@ fn index() -> Result<(ContentType, String), status::Custom<&'static str>> {
     Ok((ContentType::HTML, rendered))   
 }
 
+#[get("/about")]
 fn about() -> Result<(ContentType, String), status::Custom<&'static str>> {
     let mut ctx = TeraContext::new();
 
@@ -53,6 +54,7 @@ fn about() -> Result<(ContentType, String), status::Custom<&'static str>> {
     Ok((ContentType::HTML, rendered))   
 }
 
+#[get("/contact")]
 fn contact() -> Result<(ContentType, String), status::Custom<&'static str>> {
     let mut ctx = TeraContext::new();
 
@@ -76,7 +78,9 @@ fn favicon() -> Redirect {
 /// Router for the root path
 pub fn router() -> Router {
     Router::new("/", routes![
-        index,
+        index,        
+        about,
+        contact,
         favicon
     ])
     .router(res::router())
