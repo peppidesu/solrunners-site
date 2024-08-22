@@ -10,29 +10,67 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: Build
       run: cargo build --verbose
-    - uses: actions/upload-artifact@v4
-      with:
-        name: ci-build
-        path: ./target
-        retention-days: 1
-        overwrite: true
-  test:
+    - name: Test
+      run: cargo test --verbose
+  lint:
     runs-on: ubuntu-latest
-    needs: build
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-        with:
-          name: ci-build
-          path: ./target          
-      - name: Test
-        run: cargo test --verbose
+    - uses: actions/checkout@v4
+    - name: Linting
+      run: |
+        cargo clippy \
+          -D clippy::missing_panics_doc \
+          -D clippy::missing_errors_doc \
+          -D clippy::missing_safety_doc \
+          -D clippy::unnecessary_safety_doc \
+          -W clippy::doc_markdown \
+          -W clippy::doc_link_with_quotes \
+          -D clippy::missing_docs_in_private_items \
+          -W clippy::empty_line_after_doc_comments \
+          -D clippy::empty_docs \            
+          -D clippy::undocumented_unsafe_blocks \
+          -D clippy::multiple_unsafe_ops_per_block \          
+          -D clippy::unnecessary_safety_comment \                      
+          -D clippy::string_lit_chars_any \
+          -D clippy::large_include_file \
+          -D clippy::mutex_atomic \            
+          -D clippy::allow_attributes_without_reason \
+          -D clippy::as_underscore \
+          -D clippy::assertions_on_result_states \
+          -W clippy::deref_by_slicing \
+          -W clippy::if_then_some_else_none \
+          -D clippy::min_ident_chars \
+          -D clippy::non_ascii_literal \
+          -D clippy::pathbuf_init_then_push \
+          -D clippy::pub_without_shorthand \
+          -D clippy::rest_pat_in_fully_bound_structs \
+          -D clippy::rc_mutex \
+          -W clippy::same_name_method \
+          -W clippy::string_add \
+          -D clippy::string_to_string \
+          -D clippy::create_dir \
+          -D clippy::exit \
+          -W clippy::filetype_is_file \
+          -W clippy::float_cmp_const \
+          -W clippy::lossy_float_literal \
+          -W clippy::self_named_module_files \
+          -D clippy::tests_outside_test_module \
+          -D clippy::todo \
+          -W clippy::try_err \
+          -W clippy::verbose_file_reads \
+          
+          
+          
+          
+          
+          
+
     
   
  
