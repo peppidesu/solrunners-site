@@ -13,11 +13,11 @@ pub static RESOURCE_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/res");
 lazy_static! {
     pub static ref templ: Tera = {
         let mut tera = match Tera::new(
-            &format!("{}/templates/**/*.html", RESOURCE_PATH)
+            &format!("{RESOURCE_PATH}/templates/**/*.html")
         ) {
             Ok(t) => t,
             Err(e) => {
-                println!("Parsing error(s): {}", e);
+                println!("Parsing error(s): {e}");
                 ::std::process::exit(1);
             }
         };

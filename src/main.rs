@@ -1,7 +1,7 @@
 #[macro_use] extern crate rocket;
 
 use rocket::{
-    http::{ContentType, Status}, 
+    http::ContentType, 
     response::status
 };
 
