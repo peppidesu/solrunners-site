@@ -1458,6 +1458,7 @@ dependencies = [
  "chrono",
  "lazy_static",
  "rocket",
+ "serde",
  "tera",
 ]
 

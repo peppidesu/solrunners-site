@@ -1,49 +1,47 @@
-#[macro_use] extern crate rocket;
+//! # Solrunners website
+//! Website for the Solrunners project.
+//! Written in Rust using the Rocket web framework.
 
-use std::error::Error;
+#[macro_use] extern crate rocket;
 
 use lazy_static::lazy_static;
 use tera::Tera;
 
-pub mod resource;
+/// Contains all routes for the application
+pub mod routes;
+/// Contains all templates for the application
 pub mod views;
+/// Error handling
+pub mod error;
 
-pub static RESOURCE_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/res");
+mod router;
+
+/// Path to the res directory
+pub static RES_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/res");
 
 lazy_static! {
-    pub static ref templ: Tera = {
-        let mut tera = match Tera::new(
-            &format!("{RESOURCE_PATH}/templates/**/*.html")
-        ) {
-            Ok(t) => t,
-            Err(e) => {
-                println!("Parsing error(s): {e}");
-                ::std::process::exit(1);
-            }
-        };
+    /// Tera instance
+    pub static ref template: Tera = {
+        let mut tera = Tera::new(
+            &format!("{RES_PATH}/templates/**/*.html")
+        ).unwrap_or_else(|e| {
+            panic!("Failed to load templates: {}", e);
+        });
         tera.autoescape_on(vec![".html"]);                
         tera
     };
 }
 
-pub fn templ_err_to_status(e: tera::Error) -> rocket::response::status::Custom<&'static str> {
-    println!("Template error: {e}\n  {}", 
-        e.source()
-            .map(|e| e.to_string())
-            .unwrap_or_else(|| "Unknown source".to_string())
-    );
-    rocket::response::status::Custom(rocket::http::Status::InternalServerError, "Template error")
-}
-
+/// Prelude module. Contains commonly used imports
 pub mod prelude {
     pub use crate::{
-        templ,
-        RESOURCE_PATH
+        template,
+        RES_PATH,
+        router::{Router, MountRouter},
     };
     pub use tera::{
         Tera,
-        Context as TeraContext,
-        Result as TeraResult
-    };        
+        Context as TeraContext
+    };       
 }
 
