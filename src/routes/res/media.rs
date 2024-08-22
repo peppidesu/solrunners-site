@@ -1,10 +1,10 @@
-use rocket::{
-    fs::NamedFile, get, http::Status, response::status
-};
-use std::path::PathBuf;
-
 use crate::prelude::*;
+use crate::routes::prelude::*;
 use crate::error::file_read_err_to_status;
+
+use std::path::PathBuf;
+use rocket::fs::NamedFile;
+
 
 #[get("/media/<path..>")]
 pub async fn media(path: PathBuf) -> Result<NamedFile, status::Custom<&'static str>> {        

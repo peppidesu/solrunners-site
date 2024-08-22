@@ -59,11 +59,10 @@ body {
     height: 100%;
     margin: 0 auto;
     width: 800px;
-    padding: 1rem;
+    padding: 2rem;
 }
 /* ------------------------------------ Buttons ------------------------------------ */
-
-button {
+.button {
     font-family: var(--font-mono);
     font-size: 1rem;
     padding: 0.5rem 1rem;
@@ -75,8 +74,7 @@ button {
     cursor: pointer;    
     transition: all 0.1s;
 }
-
-button:active {
+.button:active {
     background: var(--c-accent-hl);
     color: var(--c-bg-dim);
     border-color: var(--c-accent-hl);
@@ -84,16 +82,16 @@ button:active {
     transition-duration: 0.05s;
 }
 
-@media (hover) {
-    button:hover {
+@media (hover) {    
+    .button:hover {
         background: var(--c-button-bg-hover);
         color: var(--c-accent-hl);
         border-color: var(--c-accent-hl);
         transform: translateY(-1px);
         box-shadow: 0 2px 0 0px var(--c-accent-hl);
     }
-
-    button:active {
+    
+    .button:active {
         background: var(--c-accent-hl);
         color: var(--c-bg-dim);
         border-color: var(--c-accent-hl);
@@ -103,21 +101,18 @@ button:active {
     }
 }
 
-@media (prefers-reduced-motion), (update: slow) {
-    button {
+@media (prefers-reduced-motion), (update: slow) {    
+    .button {
         transition: none;
     }
-    button:active,
-    button:hover {
+    
+    .button:active,
+    .button:hover {
         transform: none;
         box-shadow: none;
     }
 }
 /* --------------------------------------------------------------------------------- */
-
-p {
-    margin: 0.5rem;
-}
 
 .navbar {
     display: flex;

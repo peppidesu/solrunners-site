@@ -7,5 +7,5 @@ use crate::prelude::*;
 /// If the template fails to render, a
 pub fn navbar() -> Result<String, tera::Error> {
     let ctx = TeraContext::new();     
-    template.render("navbar.html", &ctx)
+    template.render("components/navbar.html", &ctx)
 }

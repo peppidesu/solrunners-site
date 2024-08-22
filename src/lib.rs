@@ -10,7 +10,7 @@ use tera::Tera;
 /// Contains all routes for the application
 pub mod routes;
 /// Contains all templates for the application
-pub mod views;
+pub mod components;
 /// Error handling
 pub mod error;
 

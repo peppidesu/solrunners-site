@@ -1,16 +1,15 @@
-use rocket::{
-    get, http::{ContentType, Status}, response::status
-};
-use std::path::PathBuf;
-
 use crate::prelude::*;
+use crate::routes::prelude::*;
 use crate::error::file_read_err_to_status;
+
+use std::path::PathBuf;
+use rocket::fs::NamedFile;
 
 /// Endpoint for loading stylesheets
 #[get("/style/<path..>")]
-pub fn style(path: PathBuf) -> Result<(ContentType, String), status::Custom<&'static str>> {        
-    // Check if the path is a CSS file
-    if path.extension().map_or(false, |ext| ext != "css") {        
+pub async fn style(path: PathBuf) -> Result<NamedFile, status::Custom<&'static str>> {        
+    // Check if the path is a CSS or a WOFF2 file
+    if path.extension().map_or(false, |ext| ["css", "woff2"].iter().all(|e| ext != *e)) {        
         return Err(status::Custom(Status::BadRequest, "Must be a CSS file"));        
     }
 
@@ -21,7 +20,9 @@ pub fn style(path: PathBuf) -> Result<(ContentType, String), status::Custom<&'st
         .join(path);
 
     // Read the file to a string
-    let content = std::fs::read_to_string(path).map_err(file_read_err_to_status)?;
+    let content = NamedFile::open(path)
+        .await
+        .map_err(file_read_err_to_status)?;
 
-    Ok((ContentType::CSS, content))
+    Ok(content)
 }
