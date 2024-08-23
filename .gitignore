@@ -1,1 +1,7 @@
 /target
+
+# ignore nix dev tools
+.direnv/
+.envrc
+flake.nix
+flake.lock
