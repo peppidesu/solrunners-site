@@ -1,5 +1,6 @@
+/// This module contains the routes for the application
+pub mod error;
 mod res;
-mod zine;
 
 mod prelude {
     pub use rocket::{
@@ -13,60 +14,56 @@ mod prelude {
             Redirect
         }
     };
+
+    pub use crate::error::HandleTeraError;    
 }
 
-use crate::error::{tera_err_display_verbose, tera_err_to_status_500};
+
 use crate::prelude::*;
 use crate::components;
 
 use prelude::*;
 
-/// Endpoint for the index page
-/// ## Errors
-/// - If a template fails to render, a status code 500 is returned
+
 #[get("/")]
 fn index() -> Result<(ContentType, String), status::Custom<&'static str>> {
     let mut ctx = TeraContext::new();
+    ctx.insert("time", &chrono::Local::now().format("%H:%M:%S").to_string());
+    let content = template.render("pages/home.html", &ctx)
+        .handle_tera_error()?;
+        
+    let content = components::page_base::render("home", &content)
+        .handle_tera_error()?;
 
-    ctx.insert("time", &chrono::Local::now().time().format("%H:%M").to_string());
+    Ok((ContentType::HTML, content))
+}
+
+#[get("/now")]
+fn now() -> Result<(ContentType, String), status::Custom<&'static str>> {
+    let ctx = TeraContext::new();
     
-    // Insert the navbar template
-    ctx.insert("navbar", &components::navbar()
-        .unwrap_or_else(tera_err_display_verbose));
-    
-    let rendered = template.render("index.html", &ctx)
-        .map_err(tera_err_to_status_500)?;
-    
-    Ok((ContentType::HTML, rendered))   
+    let content = template.render("pages/now.html", &ctx)
+        .handle_tera_error()?;
+        
+    let content = components::page_base::render("now", &content)
+        .handle_tera_error()?;
+
+    Ok((ContentType::HTML, content))
 }
 
 #[get("/about")]
 fn about() -> Result<(ContentType, String), status::Custom<&'static str>> {
-    let mut ctx = TeraContext::new();
+    let ctx = TeraContext::new();
+    
+    let content = template.render("pages/about.html", &ctx)
+        .handle_tera_error()?;
+        
+    let content = components::page_base::render("about", &content)
+        .handle_tera_error()?;
 
-    // Insert the navbar template
-    ctx.insert("navbar", &components::navbar()
-        .unwrap_or_else(tera_err_display_verbose));
-    
-    let rendered = template.render("about.html", &ctx)
-        .map_err(tera_err_to_status_500)?;
-    
-    Ok((ContentType::HTML, rendered))   
+    Ok((ContentType::HTML, content))
 }
 
-#[get("/contact")]
-fn contact() -> Result<(ContentType, String), status::Custom<&'static str>> {
-    let mut ctx = TeraContext::new();
-
-    // Insert the navbar template
-    ctx.insert("navbar", &components::navbar()
-        .unwrap_or_else(tera_err_display_verbose));
-    
-    let rendered = template.render("contact.html", &ctx)
-        .map_err(tera_err_to_status_500)?;
-    
-    Ok((ContentType::HTML, rendered))   
-}
 
 
 /// Endpoint for the favicon
@@ -78,11 +75,10 @@ fn favicon() -> Redirect {
 /// Router for the root path
 pub fn router() -> Router {
     Router::new("/", routes![
-        index,        
+        index,
+        now,
         about,
-        contact,
         favicon
     ])
-    .router(res::router())
-    .router(zine::router())
+    .router(res::router())    
 }

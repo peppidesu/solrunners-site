@@ -5,8 +5,6 @@ use rocket::Rocket;
 /// Router for recursively mounting routes.
 /// ## Example
 /// ```rust
-/// use rocket::routes;
-/// 
 /// fn router() -> Router {
 ///     Router::new("/base", routes![
 ///         route1,
@@ -60,9 +58,7 @@ impl MountRouter for Rocket<rocket::Build> {
     fn mount_router(mut self, base: &str, router: Router) -> Self {
         let binding = PathBuf::from(base).join(router.base);
         let path = binding.to_str().unwrap();
-        for route in &router.routes {
-            println!("Mounting route: {}", path.to_owned() + route.uri.as_str());
-        }
+    
         self = self.mount(path, router.routes);
 
         for r in router.routers {

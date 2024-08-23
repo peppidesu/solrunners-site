@@ -5,9 +5,11 @@ use crate::error::file_read_err_to_status;
 use std::path::PathBuf;
 use rocket::fs::NamedFile;
 
+use super::CachedFileResponder;
+
 
 #[get("/media/<path..>")]
-pub async fn media(path: PathBuf) -> Result<NamedFile, status::Custom<&'static str>> {        
+pub async fn media(path: PathBuf) -> Result<CachedFileResponder, status::Custom<&'static str>> {        
     
     // Check for supported file types
     // If the file type is not supported, return a BadRequest status
@@ -31,5 +33,5 @@ pub async fn media(path: PathBuf) -> Result<NamedFile, status::Custom<&'static s
 
     // If the content needs sanitization, do it here
 
-    Ok(content)
+    CachedFileResponder::new(content).await.map_err(file_read_err_to_status)
 }

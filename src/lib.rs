@@ -11,7 +11,7 @@ use tera::Tera;
 pub mod routes;
 /// Contains all templates for the application
 pub mod components;
-/// Error handling
+/// Error types & utilities
 pub mod error;
 
 mod router;
