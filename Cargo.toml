@@ -10,6 +10,9 @@ rocket = "0.5.1"
 serde = { version = "1.0.208", features = ["derive"] }
 tera = "1.20.0"
 
+[lib]
+doctest = false
+
 [lints.clippy]
 missing_panics_doc = "deny"
 missing_errors_doc = "deny"
