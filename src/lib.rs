@@ -13,8 +13,8 @@ pub mod routes;
 pub mod components;
 /// Error types & utilities
 pub mod error;
-
-mod router;
+/// Router for recursively mounting routes.
+pub mod router;
 
 /// Path to the res directory
 pub static RES_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/res");
@@ -32,7 +32,7 @@ lazy_static! {
     };
 }
 
-/// Prelude module. Contains commonly used imports
+/// Prelude module. Contains commonly used imports.
 pub mod prelude {
     pub use crate::{
         template,
