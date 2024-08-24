@@ -7,14 +7,10 @@
 use lazy_static::lazy_static;
 use tera::Tera;
 
-/// Contains all routes for the application
 pub mod routes;
-/// Contains all templates for the application
 pub mod components;
-/// Error types & utilities
 pub mod error;
-
-mod router;
+pub mod router;
 
 /// Path to the res directory
 pub static RES_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/res");
@@ -32,7 +28,7 @@ lazy_static! {
     };
 }
 
-/// Prelude module. Contains commonly used imports
+/// Prelude module. Contains commonly used imports.
 pub mod prelude {
     pub use crate::{
         template,

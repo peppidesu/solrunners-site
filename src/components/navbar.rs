@@ -2,12 +2,16 @@ use serde::Serialize;
 
 use crate::prelude::*;
 
+/// Struct representing a page button in the navbar
 #[derive(Serialize)]
 struct Page<'a> {
+    /// The name of the page as it appears in the navbar
     name: &'a str,
+    /// The URI to redirect to when the page is clicked
     uri: &'a str
 }
 
+/// List of pages in the navbar
 static PAGES: [Page; 4] = [
     Page { name: "home",        uri: "/" },
     Page { name: "now",         uri: "/now" },
