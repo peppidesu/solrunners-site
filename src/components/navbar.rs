@@ -27,9 +27,8 @@ static PAGES: [Page; 4] = [
 /// A string containing the rendered template.
 /// ## Errors
 /// If the template fails to render, a `tera::Error` is returned.
-pub fn render(current_page: &str) -> Result<String, tera::Error> {
+pub fn render() -> Result<String, tera::Error> {
     let mut ctx = TeraContext::new();         
-    ctx.insert("pages", &PAGES);
-    ctx.insert("current_page", current_page);
+    ctx.insert("pages", &PAGES);    
     template.render("components/navbar.html", &ctx)
 }

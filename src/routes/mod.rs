@@ -14,6 +14,7 @@ pub mod error;
 /// Routes in /res.
 /// Serves static resources such as stylesheets, images, etc.
 mod res;
+mod page;
 
 /// Prelude module for `routes`. Contains commonly used imports.
 mod prelude {
@@ -28,7 +29,7 @@ mod prelude {
             Redirect
         }
     };
-
+    pub use std::path::PathBuf;
     pub use crate::error::HandleTeraError;    
 }
 
@@ -37,51 +38,31 @@ use crate::prelude::*;
 use crate::components;
 
 use prelude::*;
+use status::NotFound;
 
 /// Router for the root path
 pub fn router() -> Router {
-    Router::new("/", routes![
-        index,
-        now,
-        about,
+    Router::new("/", routes![        
+        base_page,
         favicon
     ])
     .router(res::router())    
+    .router(page::router())
 }
 
-/// Renders the contents of a page with the given context
-fn render_page(page: &str, ctx: TeraContext) -> Result<(ContentType, String), status::Custom<&'static str>> {
-    let content = template.render(page, &ctx)
-        .handle_tera_error()?;
-        
-    let content = components::page_base::render(page, &content)
-        .handle_tera_error()?;
 
+/// ## Base page endpoint
+/// This endpoint is used to render the base page template.
+/// The base page will lazily load the content for the requested page, allowing for static
+/// content to persist across pages.
+#[get("/<path..>")]
+fn base_page(path: PathBuf) -> Result<(ContentType, String), status::Custom<&'static str>> {    
+    if path.starts_with("page") {
+        return Ok(error::error_page(Status::NotFound));
+    }
+    let content = components::page_base::render(&path.to_string_lossy())
+        .handle_tera_error()?;
     Ok((ContentType::HTML, content))
-}
-
-/// Index page
-#[get("/")]
-fn index() -> Result<(ContentType, String), status::Custom<&'static str>> {
-    let mut ctx = TeraContext::new();
-    // Used for current time example
-    ctx.insert("time", &chrono::Local::now().format("%H:%M:%S").to_string());
-    
-    render_page("pages/home.html", ctx)
-}
-
-/// Now page
-#[get("/now")]
-fn now() -> Result<(ContentType, String), status::Custom<&'static str>> {
-    let ctx = TeraContext::new();  
-    render_page("pages/now.html", ctx)
-}
-
-/// About page
-#[get("/about")]
-fn about() -> Result<(ContentType, String), status::Custom<&'static str>> {
-    let ctx = TeraContext::new();
-    render_page("pages/about.html", ctx)
 }
 
 /// Endpoint for the favicon

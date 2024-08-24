@@ -2,11 +2,13 @@
   <img src="/res/media/solrunners.jpg" class="navbar-logo" alt="logo"/>
   <div class="navbar-buttons">
     {% for page in pages %}            
-      {% if page.name == current_page %}
-        <a class="button button-selected" href="{{ page.uri }}">{{ page.name }}<a/>
-      {% else %}
-        <a class="button" href="{{ page.uri }}">{{ page.name }}<a/>
-      {% endif %}
+      <button 
+        class="button" 
+        id="button-{{ page.uri }}"
+        onclick="navContent('{{ page.uri }}')"
+      >
+        {{ page.name }}
+      </button>
     {% endfor %}
   </div>
 </span>

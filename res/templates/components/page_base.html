@@ -1,12 +1,71 @@
 <html>
-    <head>
-        <link rel="stylesheet" href="/res/style/style.css">                
-        <title>{{ title }} - solrunners</title>
-    </head>
-    <body class="theme-dark">        
-        {{ navbar | safe }}
-        <div id="content">
-            {{ content | safe }}
-        </div>
-    </body>
+  <head>
+    <link rel="stylesheet" href="/res/style/style.css">        
+    <script lang="javascript">
+      const pageUriPrefix = "/page";
+      const titleSuffix = " - solrunners";
+      
+      let abortController = new AbortController()
+      let abortSignal = abortController.signal
+      
+      let activePage = window.location.pathname;      
+
+      window.onload = function() {
+        const uri = window.location.pathname;
+        navContent(uri, false);
+      }
+
+      addEventListener("popstate", (event) => {
+        const uri = event.state.uri;
+        navContent(uri, false);
+      });
+
+      function navContent(uri, addHistory = true) {
+        abortController.abort();
+        abortController = new AbortController();
+        abortSignal = abortController.signal;
+
+        document.getElementById("button-" + activePage)
+          .classList.remove("button-selected");
+        document.getElementById("button-" + uri)
+          .classList.add("button-selected");
+        activePage = uri;
+        
+
+        const spinner = document.getElementById("spinner");
+        const content = document.getElementById("content-inner");  
+
+        content.classList.add("hidden");
+        spinner.classList.remove("hidden");
+
+        const contentUri = pageUriPrefix + uri;        
+        console.log("Fetching " + contentUri);
+        
+        fetch(contentUri, { method: 'get', signal: abortSignal })
+          .then(response => response.text())
+          .then(text => {            
+            content.innerHTML = text;
+            
+            content.classList.remove("hidden");
+            spinner.classList.add("hidden");
+
+            if (addHistory) {
+              window.history.pushState({uri: uri}, "", uri);
+            }
+          })
+          .catch(error => {
+            console.error("Error fetching " + contentUri);
+            console.error(error);
+          });
+      }
+    </script>
+  </head>
+  <body class="theme-dark">        
+      {{ navbar | safe }}
+    <div id="content">
+      {{ placeholder | safe }}
+      <div id="content-inner" class="hidden"></div>
+    </div>
+    
+  </body>
 </html>

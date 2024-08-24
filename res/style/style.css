@@ -50,19 +50,29 @@
 body {        
     margin: 0;
     padding: 0;
-    font-family: var(--font-sans);
+    font-family: var(--font-mono);
     background: var(--c-bg-dim);
     color: var(--c-text);
 }
 #content {
-    display: block;
     background: var(--c-bg);
     height: 100%;
     margin: 0 auto;
     width: 800px;
-    padding: 0 2rem;
+    position: relative;
     border-radius: 20px;
+} 
+
+#content-inner {
+    padding: 0.1px 2rem;
+
+    opacity: 1;
+    transition: opacity 0.5s;
 }
+#content-inner.hidden {
+    opacity: 0;
+}
+
 /* ------------------------------------ Buttons ------------------------------------ */
 .button {
     font-family: var(--font-mono);
@@ -125,6 +135,7 @@ a.button {
 /* --------------------------------------------------------------------------------- */
 
 .navbar {
+    position:relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -133,7 +144,7 @@ a.button {
     background: var(--c-bg-hl);
     gap: 10px;
     height: 64px;
-    border-bottom: 1px solid var(--c-border);
+    z-index: 100;
 }
 
 .navbar-logo {
@@ -142,7 +153,55 @@ a.button {
 }
 .navbar-buttons {    
     display: flex;
-    align-items: left;    
+    align-items: start;
     flex-grow: 1;    
     gap: 10px;
 }
+
+/* ------------------------------------ Spinner ------------------------------------ */
+.spinner-container {
+    position: absolute;    
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 192px;
+}
+.spinner {
+    display: inline-block;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    box-sizing: border-box;
+    animation: spinner-animation 1.2s ease-in-out infinite;
+
+    opacity: 1;
+    transition: opacity 0.5s;
+}
+.spinner.hidden {
+    opacity: 0;
+}
+  
+@keyframes spinner-animation {
+    0% {
+        box-shadow: -54px 54px var(--c-accent-hl) inset;
+    }
+    100% {
+        box-shadow: 36px -36px var(--c-accent-hl) inset;
+    }
+}
+
+@media only screen and (min-width: 480px) and (max-width: 1281px) { 
+    #content {
+        width: 100%;
+        border-radius: 0;
+    }
+    :root {
+        zoom: 240%;
+    }
+    .navbar {            
+        margin-bottom: 0;
+        box-shadow: 0 10px 10px 0px rgba(0, 0, 0, 0.2);
+    }
+} 

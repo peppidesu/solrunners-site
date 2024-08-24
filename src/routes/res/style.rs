@@ -4,6 +4,7 @@ use crate::error::file_read_err_to_status;
 
 use std::path::PathBuf;
 use rocket::fs::NamedFile;
+use rocket_etag_if_none_match::EtagIfNoneMatch;
 
 use super::caching::CachedFileResponder;
 
@@ -14,7 +15,8 @@ use super::caching::CachedFileResponder;
 /// - If the file type is not supported, a BadRequest status is returned.
 /// - If the file cannot be read, an error status is returned. see `file_read_err_to_status`.
 #[get("/style/<path..>")]
-pub async fn style(path: PathBuf) -> Result<CachedFileResponder, status::Custom<&'static str>> {        
+pub async fn style<'a>(path: PathBuf, etag_if_none_match: EtagIfNoneMatch<'a>) 
+-> Result<CachedFileResponder, status::Custom<&'static str>> {
     // Check for supported file types
     // If the file type is not supported, return a BadRequest status
     if path.extension().map_or(false, |ext| ["css", "woff2"].iter().all(|e| ext != *e)) {        
@@ -34,7 +36,5 @@ pub async fn style(path: PathBuf) -> Result<CachedFileResponder, status::Custom<
         .map_err(file_read_err_to_status)?;
 
     // Return the file as a `CachedFileResponder` to enable caching
-    CachedFileResponder::new(content)
-        .await
-        .map_err(file_read_err_to_status)
+    CachedFileResponder::new(content, etag_if_none_match).await        
 }
