@@ -5,12 +5,16 @@ use crate::error::file_read_err_to_status;
 use std::path::PathBuf;
 use rocket::fs::NamedFile;
 
-use super::CachedFileResponder;
+use super::caching::CachedFileResponder;
 
-
+/// Endpoint for media files.
+/// # Parameters
+/// - `path`: The path to the media file, relative to the /res/media directory.
+/// # Errors
+/// - If the file type is not supported, a BadRequest status is returned.
+/// - If the file cannot be read, an error status is returned. see `file_read_err_to_status`.
 #[get("/media/<path..>")]
 pub async fn media(path: PathBuf) -> Result<CachedFileResponder, status::Custom<&'static str>> {        
-    
     // Check for supported file types
     // If the file type is not supported, return a BadRequest status
     if path.extension().map_or(false, |ext| {
@@ -33,5 +37,8 @@ pub async fn media(path: PathBuf) -> Result<CachedFileResponder, status::Custom<
 
     // If the content needs sanitization, do it here
 
-    CachedFileResponder::new(content).await.map_err(file_read_err_to_status)
+    // Return the file in a `CachedFileResponder` to enable caching
+    CachedFileResponder::new(content)
+        .await
+        .map_err(file_read_err_to_status)
 }

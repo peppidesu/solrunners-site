@@ -7,13 +7,9 @@
 use lazy_static::lazy_static;
 use tera::Tera;
 
-/// Contains all routes for the application
 pub mod routes;
-/// Contains all templates for the application
 pub mod components;
-/// Error types & utilities
 pub mod error;
-/// Router for recursively mounting routes.
 pub mod router;
 
 /// Path to the res directory

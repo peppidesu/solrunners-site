@@ -1,8 +1,9 @@
+//! Definitions for the Router struct.
 use std::path::PathBuf;
-
 use rocket::Rocket;
 
 /// Router for recursively mounting routes.
+/// See the `routes` module for more information on how to create routes.
 /// ## Example
 /// ```rust
 /// use rocket::{get, routes};
@@ -33,16 +34,21 @@ use rocket::Rocket;
 /// - `/base/route2` --> "route2"
 /// - `/base/sub/route1` --> "route1"
 /// - `/base/sub/route2` --> "route2"
-pub struct Router {    
+pub struct Router {   
+    /// The base path to mount the routes to. 
+    /// This path will be appended to the parent path if it exists. 
     base: &'static str,
+    /// A list of routes to mount to the base path.
     routes: Vec<rocket::Route>,
+    /// A list of routers to mount to the base path.
     routers: Vec<Router>
 }
 
 impl Router {
     /// Create a new router
     /// ## Arguments
-    /// - `base` - The base path to mount the routes to. This path will be appended to the parent path if it exists.
+    /// - `base` - The base path to mount the routes to. 
+    ///    This path will be appended to the parent path if it exists.
     /// - `routes` - A list of routes to mount to the base path.
     pub fn new(base: &'static str, routes: Vec<rocket::Route>) -> Self {
         Self {
@@ -53,6 +59,8 @@ impl Router {
     }
 
     /// Add a router to the current router.
+    /// ## Arguments
+    /// - `router` - The router to add.    
     pub fn router(mut self, router: Router) -> Self {
         self.routers.push(router);
         self
@@ -61,7 +69,7 @@ impl Router {
 
 /// Extension trait for mounting routers to a Rocket instance.
 pub trait MountRouter {
-    /// Mount a router to the Rocket instance.
+    /// Mount `router` to the Rocket instance at `base`.
     fn mount_router(self, base: &str, router: Router) -> Self;
 }
 

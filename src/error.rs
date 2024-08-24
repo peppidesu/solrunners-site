@@ -1,3 +1,5 @@
+//! Error handling utilities
+
 use std::error::Error;
 
 use rocket::{http::Status, response::status};

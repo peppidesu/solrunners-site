@@ -20,7 +20,7 @@ missing_safety_doc = "deny"
 unnecessary_safety_doc = "deny"
 doc_markdown = "warn"
 doc_link_with_quotes = "warn"
-# missing_docs_in_private_items = "warn"
+missing_docs_in_private_items = "warn"
 
 empty_line_after_doc_comments = "warn"
 empty_docs = "deny"            
