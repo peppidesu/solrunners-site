@@ -5,23 +5,34 @@ use rocket::Rocket;
 /// Router for recursively mounting routes.
 /// ## Example
 /// ```rust
+/// use rocket::{get, routes};
+/// use solrunners_site::prelude::*;
+/// 
+/// #[get("/route1")]
+/// fn route1() -> &'static str {
+///    "route1"
+/// }
+/// #[get("/route2")]
+/// fn route2() -> &'static str {
+///   "route2"
+/// }
+/// 
 /// fn router() -> Router {
 ///     Router::new("/base", routes![
 ///         route1,
 ///         route2
 ///     ])
 ///     .router(Router::new("/sub", routes![
-///         route3,
-///         route4
-///     ]));
+///         route1,
+///         route2
+///     ]))
 /// }
 /// ```
 /// The above code will produce the following routes:
-/// - `/base/route1`
-/// - `/base/route2`
-/// - `/base/sub/route3`
-/// - `/base/sub/route4`
-/// 
+/// - `/base/route1` --> "route1"
+/// - `/base/route2` --> "route2"
+/// - `/base/sub/route1` --> "route1"
+/// - `/base/sub/route2` --> "route2"
 pub struct Router {    
     base: &'static str,
     routes: Vec<rocket::Route>,
