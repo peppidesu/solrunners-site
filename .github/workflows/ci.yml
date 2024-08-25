@@ -15,8 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4 
-    - run: rustup toolchain install stable --profile minimal
-    - run: cargo build
+    - run: rustup toolchain install stable --profile minimal    
     - uses: Swatinem/rust-cache@v2
       with:
         prefix-key: "cargo"
