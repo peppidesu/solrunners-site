@@ -12,11 +12,10 @@ struct Page<'a> {
 }
 
 /// List of pages in the navbar
-static PAGES: [Page; 4] = [
+static PAGES: [Page; 3] = [
     Page { name: "home",        uri: "/" },
     Page { name: "now",         uri: "/now" },
-    Page { name: "zine",        uri: "/zine" },
-    Page { name: "about",       uri: "/about" },
+    Page { name: "zine",        uri: "/zine" },    
 ];
 
 /// Renders the navbar template
@@ -27,9 +26,8 @@ static PAGES: [Page; 4] = [
 /// A string containing the rendered template.
 /// ## Errors
 /// If the template fails to render, a `tera::Error` is returned.
-pub fn render(current_page: &str) -> Result<String, tera::Error> {
+pub fn render() -> Result<String, tera::Error> {
     let mut ctx = TeraContext::new();         
-    ctx.insert("pages", &PAGES);
-    ctx.insert("current_page", current_page);
+    ctx.insert("pages", &PAGES);    
     template.render("components/navbar.html", &ctx)
 }

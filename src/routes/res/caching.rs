@@ -1,32 +1,44 @@
-use rocket::{fs::NamedFile, http::Header};
+use crate::routes::prelude::*;
+use crate::error::file_read_err_to_status;
 
-/// A responder that enables caching of files through the `Last-Modified` header.
-/// At some point this should use `ETag` instead, but for now this is good enough.
+use rocket::fs::NamedFile;
+use rocket::http::Header;
+use rocket_etag_if_none_match::{EtagIfNoneMatch, entity_tag::EntityTag};
+
+
+/// A responder for a cached file.
+/// 
 #[derive(Responder)]
 #[response()]
 pub(super) struct CachedFileResponder {
     /// The file to cache
     inner: NamedFile,    
-    /// The `Last-Modified` header
-    last_modified: Header<'static>
+    /// Cache control header
+    cache_control: Header<'static>,    
+    /// Etag header
+    etag: Header<'static>,
 }
 
 impl CachedFileResponder {
     /// Create a new `CachedFileResponder` from a `NamedFile`.
-    pub async fn new(inner: NamedFile) -> Result<Self, std::io::Error> {        
-        // Get the last modified time of the file
-        let modified = inner.metadata().await?
-            .modified().ok()
-            .unwrap_or(std::time::SystemTime::UNIX_EPOCH);
+    pub async fn new(inner: NamedFile, etag_if_none_match: EtagIfNoneMatch<'_>) 
+        -> Result<Self, status::Custom<&'static str>> {        
 
-        // Format to RFC 2822
-        let timestamp = chrono::DateTime::<chrono::Utc>::from(modified)
-            .format("%a, %d %b %Y %T GMT")
-            .to_string();
-
-        // Create the Last-Modified header
-        let last_modified = Header::new("Last-Modified", timestamp);
+        let etag = EntityTag::from_file_meta(&inner.metadata().await    
+            .map_err(file_read_err_to_status)?);
         
-        Ok(Self { inner, last_modified })
+        if etag_if_none_match.weak_eq(&etag) {
+            return Err(status::Custom(Status::NotModified, ""));
+        }
+
+        // Cache Control header
+        let cache_control = Header::new("Cache-Control", "public, max-age=0, must-revalidate");
+        // Create the etag header
+        let etag_header = Header::new("ETag", etag.to_string());
+
+        
+
+        Ok(Self { inner, cache_control, etag: etag_header })
     }
 }
+
