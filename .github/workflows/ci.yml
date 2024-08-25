@@ -10,20 +10,38 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4 
+    - run: rustup toolchain install stable --profile minimal
+    - run: cargo build
+    - uses: Swatinem/rust-cache@v2
+      with:
+        prefix-key: "cargo"
+        shared-key: "build-cache"        
+        cache-on-failure: "true"
   test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Build
-      run: cargo build --verbose
-    - name: Test
-      run: cargo test --verbose
+    - run: rustup toolchain install stable --profile minimal
+    - uses: Swatinem/rust-cache@v2
+      with:
+        prefix-key: "cargo"
+        shared-key: "build-cache"        
+    - run: cargo test
   lint:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Linting
-      run: cargo clippy
+    - run: rustup toolchain install stable --profile minimal
+    - uses: Swatinem/rust-cache@v2
+      with:
+        prefix-key: "cargo"
+        shared-key: "build-cache"        
+    - run: cargo clippy
           
           
           
