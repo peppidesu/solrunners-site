@@ -8,14 +8,6 @@
 //! ## Example
 //! A good example of how to define routes is the `res` module.
 
-/// Error catchers for the application
-pub mod error;
-
-/// Routes in /res.
-/// Serves static resources such as stylesheets, images, etc.
-mod res;
-mod page;
-
 /// Prelude module for `routes`. Contains commonly used imports.
 mod prelude {
     pub use rocket::{
@@ -33,12 +25,21 @@ mod prelude {
     pub use crate::error::HandleTeraError;    
 }
 
+/// Error catchers for the application
+pub mod error;
+
+/// Routes in /res.
+/// Serves static resources such as stylesheets, images, etc.
+mod res;
+
+/// Routes in /page.
+/// Serves page content.
+mod page;
 
 use crate::prelude::*;
 use crate::components;
 
 use prelude::*;
-use status::NotFound;
 
 /// Router for the root path
 pub fn router() -> Router {

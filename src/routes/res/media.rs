@@ -14,7 +14,7 @@ use super::caching::CachedFileResponder;
 /// - If the file type is not supported, a BadRequest status is returned.
 /// - If the file cannot be read, an error status is returned. see `file_read_err_to_status`.
 #[get("/media/<path..>")]
-pub async fn media<'a>(path: PathBuf, etag_if_none_match: EtagIfNoneMatch<'a>) 
+pub async fn media(path: PathBuf, etag_if_none_match: EtagIfNoneMatch<'_>) 
     -> Result<CachedFileResponder, status::Custom<&'static str>> {        
     // Check for supported file types
     // If the file type is not supported, return a BadRequest status

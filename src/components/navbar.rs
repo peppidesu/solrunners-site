@@ -12,11 +12,10 @@ struct Page<'a> {
 }
 
 /// List of pages in the navbar
-static PAGES: [Page; 4] = [
+static PAGES: [Page; 3] = [
     Page { name: "home",        uri: "/" },
     Page { name: "now",         uri: "/now" },
-    Page { name: "zine",        uri: "/zine" },
-    Page { name: "about",       uri: "/about" },
+    Page { name: "zine",        uri: "/zine" },    
 ];
 
 /// Renders the navbar template

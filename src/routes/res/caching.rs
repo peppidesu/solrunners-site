@@ -1,11 +1,13 @@
-use std::borrow::Cow;
-
-use rocket::{fs::NamedFile, http::{Header, Status}, response::status, tokio::io::AsyncReadExt as _};
-use rocket_etag_if_none_match::{
-    entity_tag::EntityTag, EtagIfNoneMatch
-};
-
+use crate::routes::prelude::*;
 use crate::error::file_read_err_to_status;
+
+use rocket::fs::NamedFile;
+use rocket::http::Header;
+use rocket_etag_if_none_match::{EtagIfNoneMatch, entity_tag::EntityTag};
+
+
+/// A responder for a cached file.
+/// 
 #[derive(Responder)]
 #[response()]
 pub(super) struct CachedFileResponder {
@@ -19,10 +21,11 @@ pub(super) struct CachedFileResponder {
 
 impl CachedFileResponder {
     /// Create a new `CachedFileResponder` from a `NamedFile`.
-    pub async fn new<'a>(mut inner: NamedFile, etag_if_none_match: EtagIfNoneMatch<'a>) 
+    pub async fn new(inner: NamedFile, etag_if_none_match: EtagIfNoneMatch<'_>) 
         -> Result<Self, status::Custom<&'static str>> {        
 
-        let etag = EntityTag::from_file_meta(&inner.metadata().await.unwrap());
+        let etag = EntityTag::from_file_meta(&inner.metadata().await    
+            .map_err(file_read_err_to_status)?);
         
         if etag_if_none_match.weak_eq(&etag) {
             return Err(status::Custom(Status::NotModified, ""));

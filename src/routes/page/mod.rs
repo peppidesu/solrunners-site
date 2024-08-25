@@ -1,14 +1,15 @@
 use crate::prelude::*;
 use crate::routes::prelude::*;
 
+/// Router for the /page path
 pub fn router() -> Router {
     Router::new("/page", routes![
         home,
-        now,
-        about
+        now        
     ])
 }
 
+/// Home page endpoint
 #[get("/")]
 fn home() -> Result<String, status::Custom<&'static str>> {
     let mut ctx = TeraContext::new();
@@ -19,6 +20,7 @@ fn home() -> Result<String, status::Custom<&'static str>> {
     Ok(content)
 }
 
+/// Now page endpoint
 #[get("/now")]
 fn now() -> Result<String, status::Custom<&'static str>> {
     let ctx = TeraContext::new();
@@ -26,13 +28,3 @@ fn now() -> Result<String, status::Custom<&'static str>> {
         .handle_tera_error()?;
     Ok(content)
 }
-
-#[get("/about")]
-fn about() -> Result<String, status::Custom<&'static str>> {
-    let ctx = TeraContext::new();
-    let content = template.render("pages/about.html", &ctx)
-        .handle_tera_error()?;
-    Ok(content)
-}
-
-
