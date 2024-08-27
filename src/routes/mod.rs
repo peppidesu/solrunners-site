@@ -44,7 +44,7 @@ use prelude::*;
 /// Router for the root path
 pub fn router() -> Router {
     Router::new("/", routes![        
-        index,
+        home,
         now,
         favicon
     ])
@@ -53,20 +53,21 @@ pub fn router() -> Router {
 }
 
 
-/// ## Base page endpoint
-/// This endpoint is used to render the base page template.
-/// The base page will lazily load the content for the requested page, allowing for static
-/// content to persist across pages.
+/// Index page endpoint
 #[get("/")]
-fn index() -> Result<(ContentType, String), status::Custom<&'static str>> {
+fn home() -> Result<(ContentType, String), status::Custom<&'static str>> {
     base_page(PathBuf::from(""))
 }
 
+/// Now page endpoint.
 #[get("/now")]
 fn now() -> Result<(ContentType, String), status::Custom<&'static str>> {
     base_page(PathBuf::from("now"))
 }
 
+/// Returns a base page for the given path.
+/// 
+/// The page has JS that will lazily fetch content from `/page/{path}`
 fn base_page(path: PathBuf) -> Result<(ContentType, String), status::Custom<&'static str>> {    
     let content = components::page_base::render(&path.to_string_lossy())
         .handle_tera_error()?;

@@ -11,10 +11,8 @@ use solrunners_site::scss::compile_all_scss;
 #[launch]
 fn rocket() -> _ {    
     compile_all_scss();
-    rocket::build()
-        // Mount the main router
-        .mount_router("/", routes::router())
-        // Mount the error catcher
+    rocket::build()        
+        .mount_router("/", routes::router())        
         .register("/page", catchers![
             routes::error::page_html_catcher
         ])

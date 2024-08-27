@@ -1,11 +1,10 @@
-
+//! SCSS compilation
 use crate::prelude::*;
 use std::{fs, path::PathBuf};
 
 
 /// Compiles a SCSS file to CSS.
 fn compile_scss_file(path: PathBuf) -> Result<(), std::io::Error> {    
-
     let options = grass::Options::default()
         .unicode_error_messages(true)
         .style(grass::OutputStyle::Compressed);

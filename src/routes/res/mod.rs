@@ -1,5 +1,4 @@
 use crate::prelude::*;
-use crate::routes::prelude::*;
 /// /res/media endpoint
 mod media;
 /// /res/style endpoint
