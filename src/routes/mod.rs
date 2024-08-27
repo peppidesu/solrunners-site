@@ -44,7 +44,8 @@ use prelude::*;
 /// Router for the root path
 pub fn router() -> Router {
     Router::new("/", routes![        
-        base_page,
+        home,
+        now,
         favicon
     ])
     .router(res::router())    
@@ -52,19 +53,27 @@ pub fn router() -> Router {
 }
 
 
-/// ## Base page endpoint
-/// This endpoint is used to render the base page template.
-/// The base page will lazily load the content for the requested page, allowing for static
-/// content to persist across pages.
-#[get("/<path..>")]
+/// Index page endpoint
+#[get("/")]
+fn home() -> Result<(ContentType, String), status::Custom<&'static str>> {
+    base_page(PathBuf::from(""))
+}
+
+/// Now page endpoint.
+#[get("/now")]
+fn now() -> Result<(ContentType, String), status::Custom<&'static str>> {
+    base_page(PathBuf::from("now"))
+}
+
+/// Returns a base page for the given path.
+/// 
+/// The page has JS that will lazily fetch content from `/page/{path}`
 fn base_page(path: PathBuf) -> Result<(ContentType, String), status::Custom<&'static str>> {    
-    if path.starts_with("page") {
-        return Ok(error::error_page(Status::NotFound));
-    }
     let content = components::page_base::render(&path.to_string_lossy())
         .handle_tera_error()?;
     Ok((ContentType::HTML, content))
 }
+
 
 /// Endpoint for the favicon
 #[get("/favicon.ico")]

@@ -28,3 +28,4 @@ fn now() -> Result<String, status::Custom<&'static str>> {
         .handle_tera_error()?;
     Ok(content)
 }
+

@@ -1,5 +1,4 @@
 use crate::prelude::*;
-
 /// /res/media endpoint
 mod media;
 /// /res/style endpoint
