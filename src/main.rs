@@ -15,7 +15,10 @@ fn rocket() -> _ {
         // Mount the main router
         .mount_router("/", routes::router())
         // Mount the error catcher
+        .register("/page", catchers![
+            routes::error::page_html_catcher
+        ])
         .register("/", catchers![
-            routes::error::default_catcher
+            routes::error::default_html_catcher
         ])
 }

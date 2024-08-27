@@ -1,15 +1,27 @@
-use crate::prelude::*;
+use std::path;
+
+use crate::{components, prelude::*};
 use crate::routes::prelude::*;
 use rocket::Request;
 
 /// The default error catcher
 #[catch(default)]
-pub fn default_catcher(stat: Status, _: &Request) -> (ContentType, String) {
-    error_page(stat)
+pub fn default_html_catcher(stat: Status, _: &Request) -> (ContentType, String) {
+    let content = components::page_base::render(&error_page(stat))
+        .handle_tera_error()
+        .unwrap_or_else(|_| error_page(Status::InternalServerError));
+
+    (ContentType::HTML, content)
+}
+
+/// Simple error catcher for /page/*
+#[catch(default)]
+pub fn page_html_catcher(stat: Status, _: &Request) -> (ContentType, String) {
+    (ContentType::HTML, error_page(stat))
 }
 
 /// Generates an error page
-pub fn error_page(stat: Status) -> (ContentType, String) {
+pub fn error_page(stat: Status) -> String {
     let mut ctx = TeraContext::new();
     ctx.insert("code", &stat.code);
     
@@ -38,8 +50,6 @@ pub fn error_page(stat: Status) -> (ContentType, String) {
 
     ctx.insert("message", &stat.reason().unwrap_or("Unknown error"));
 
-    let content = template.render("pages/error.html", &ctx)
-        .unwrap_or_else(|e| format!("Error rendering error page: {}", e));
-
-    (ContentType::HTML, content)
+    template.render("pages/error.html", &ctx)
+        .unwrap_or_else(|e| format!("Error rendering error page: {}", e))
 }

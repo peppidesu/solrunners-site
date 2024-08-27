@@ -64,7 +64,7 @@ impl Router {
     pub fn router(mut self, router: Router) -> Self {
         self.routers.push(router);
         self
-    }
+    }    
 }
 
 /// Extension trait for mounting routers to a Rocket instance.

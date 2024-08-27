@@ -37,6 +37,9 @@ pub fn compile_all_scss() {
         });
 
     for entry in walker {
-        compile_scss_file(entry.path().to_path_buf()).unwrap();
+        compile_scss_file(entry.path().to_path_buf())
+            .unwrap_or_else(|e| {
+                eprintln!("Failed to compile SCSS: {}", e);
+            });
     }
 }

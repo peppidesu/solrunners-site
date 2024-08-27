@@ -22,14 +22,27 @@
       });
 
       function updateNavButton(uri) {
-        document.getElementById("button-" + activePage)
-          .classList.remove("button-selected");
-        document.getElementById("button-" + uri)
-          .classList.add("button-selected");
+        const oldNavButton = document.getElementById("button-" + activePage)
+        if (oldNavButton) {
+          oldNavButton.classList.remove("selected");
+        }
+
+        const newNavButton = document.getElementById("button-" + uri)
+        if (newNavButton) {
+          newNavButton.classList.add("selected");
+        }
+                
         activePage = uri;        
       }
 
       async function navContent(uri, addHistory = true) {
+        if (addHistory) {
+          if (uri === activePage) {
+            return;
+          }
+          window.history.pushState({uri: uri}, "", uri);
+        }
+
         abortController.abort();
         abortController = new AbortController();
         abortSignal = abortController.signal;
@@ -45,7 +58,7 @@
 
         const contentUri = pageUriPrefix + uri;        
         console.log("Fetching " + contentUri);
-        
+
         fetch(contentUri, { method: 'get', signal: abortSignal })
           .then(response => response.text())
           .then(text => {            
@@ -53,10 +66,6 @@
             
             content.classList.remove("hidden");
             spinner.classList.add("hidden");
-
-            if (addHistory) {
-              window.history.pushState({uri: uri}, "", uri);
-            }
           })
           .catch(error => {
             console.error("Error fetching " + contentUri);
@@ -74,7 +83,7 @@
     <div class="copyright-notice">
       <p>Copyleft solrunners project 2024.</p>
       <br>
-      <p>Code snippets & website source code<br>licensed under AGPL-3.0.</p>            
+      <p>Code snippets & website source code licensed under AGPL-3.0.</p>            
       <p>"runners" zine, artwork and website content licensed under CC-BY-SA-4.0.</p>
       
     </div>
