@@ -3,9 +3,6 @@ use crate::routes::prelude::*;
 use crate::error::file_read_err_to_status;
 
 use rocket::fs::NamedFile;
-use rocket_etag_if_none_match::EtagIfNoneMatch;
-
-use super::caching::CachedFileResponder;
 
 /// Endpoint for media files.
 /// # Parameters
@@ -14,8 +11,7 @@ use super::caching::CachedFileResponder;
 /// - If the file type is not supported, a BadRequest status is returned.
 /// - If the file cannot be read, an error status is returned. see `file_read_err_to_status`.
 #[get("/media/<path..>")]
-pub async fn media(path: PathBuf, etag_if_none_match: EtagIfNoneMatch<'_>) 
-    -> Result<CachedFileResponder, status::Custom<&'static str>> {        
+pub async fn media(path: PathBuf) -> Result<NamedFile, status::Custom<&'static str>> {        
     // Check for supported file types
     // If the file type is not supported, return a BadRequest status
     if path.extension().map_or(false, |ext| {
@@ -37,6 +33,6 @@ pub async fn media(path: PathBuf, etag_if_none_match: EtagIfNoneMatch<'_>)
 
     // If the content needs sanitization, do it here
 
-    // Return the file in a `CachedFileResponder` to enable caching
-    CachedFileResponder::new(content, etag_if_none_match).await        
+    // Return the file
+    Ok(content)
 }
