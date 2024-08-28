@@ -19,10 +19,11 @@ jobs:
     - uses: Swatinem/rust-cache@v2
       with:
         prefix-key: "cargo"
-        shared-key: "build-cache"        
         cache-on-failure: "true"
         cache-all-crates: "true"
+    - run: cargo build
   test:
+    name: Test
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -30,12 +31,12 @@ jobs:
     - run: rustup toolchain install stable --profile minimal
     - uses: Swatinem/rust-cache@v2
       with:
-        prefix-key: "cargo"
-        shared-key: "build-cache"
+        prefix-key: "cargo"   
         cache-on-failure: "true"
         cache-all-crates: "true"
     - run: cargo test
   lint:
+    name: Lint
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -44,7 +45,6 @@ jobs:
     - uses: Swatinem/rust-cache@v2
       with:
         prefix-key: "cargo"
-        shared-key: "build-cache"
         cache-on-failure: "true"
         cache-all-crates: "true"
     - run: cargo clippy
