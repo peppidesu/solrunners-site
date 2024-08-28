@@ -22,6 +22,7 @@ jobs:
         cache-on-failure: "true"
         cache-all-crates: "true"
   test:
+    name: Test
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -34,6 +35,7 @@ jobs:
         cache-all-crates: "true"
     - run: cargo test
   lint:
+    name: Lint
     runs-on: ubuntu-latest
     needs: build
     steps:
