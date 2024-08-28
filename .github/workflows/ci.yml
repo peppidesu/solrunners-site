@@ -19,7 +19,6 @@ jobs:
     - uses: Swatinem/rust-cache@v2
       with:
         prefix-key: "cargo"
-        shared-key: "build-cache"
         cache-on-failure: "true"
         cache-all-crates: "true"
     - run: cargo build
@@ -32,8 +31,7 @@ jobs:
     - run: rustup toolchain install stable --profile minimal
     - uses: Swatinem/rust-cache@v2
       with:
-        prefix-key: "cargo"        
-        shared-key: "build-cache"
+        prefix-key: "cargo"   
         cache-on-failure: "true"
         cache-all-crates: "true"
     - run: cargo test
@@ -46,8 +44,7 @@ jobs:
     - run: rustup toolchain install stable --profile minimal
     - uses: Swatinem/rust-cache@v2
       with:
-        prefix-key: "cargo"     
-        shared-key: "build-cache"
+        prefix-key: "cargo"
         cache-on-failure: "true"
         cache-all-crates: "true"
     - run: cargo clippy
