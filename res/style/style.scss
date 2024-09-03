@@ -44,9 +44,6 @@ h1, h2 {
     background: var(--c-bg);
     
     width: 100%;
-    @include breakpoint(480px) {     
-
-    }
     @include breakpoint(768px)  { 
         width: 768px;
         margin-top: calc(var(--navbar-height) + 2rem);
@@ -115,7 +112,7 @@ h1, h2 {
         border-color: var(--c-accent-hl);
         box-shadow: 0 0 0 0px var(--c-accent-hl);
         transform: translateY(2px);
-
+        
         transition-duration: 0.05s;
     }
 }
@@ -151,8 +148,8 @@ a.button {
     
     & > * {
         flex-grow: 1;
-        margin-block: 0px;    
-        height: 100%;    
+        margin-block: 0px;
+        height: 100%;
     }
     flex-grow: 1;    
     gap: 12px;
