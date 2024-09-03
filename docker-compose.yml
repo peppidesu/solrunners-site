@@ -1,0 +1,29 @@
+services:
+  db:
+    container_name: solrunners-site-db
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/dbpasswd
+      MYSQL_DATABASE: default
+    ports:
+      - "3306:3306"
+    secrets:
+      - dbpasswd
+  server:
+    container_name: solrunners-site-server
+    depends_on: [db]
+    build: .
+    environment:
+      - DATABASE_URL=mysql://solrunners-site-db:3306/default
+      - DATABASE_PASSWORD_FILE=/run/secrets/dbpasswd
+    ports:
+      - "8000:8000"
+    secrets:
+      - dbpasswd
+
+secrets:
+  dbpasswd:
+    file: ./secrets/dbpasswd
+
+
+
