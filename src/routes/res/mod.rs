@@ -4,7 +4,7 @@ mod media;
 /// /res/style endpoint
 mod style;
 
-/// The router for the /res endpoint.
+/// The router for the /res/* endpoints.
 pub fn router() -> Router {
     Router::new("/res", routes![
         media::media,

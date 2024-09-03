@@ -1,6 +1,5 @@
-use serde::Serialize;
-
 use crate::prelude::*;
+use serde::Serialize;
 
 /// Struct representing a page button in the navbar
 #[derive(Serialize)]
