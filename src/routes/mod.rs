@@ -36,6 +36,9 @@ mod res;
 /// Serves page content.
 mod page;
 
+/// Routes in /api.
+mod api;
+
 use crate::prelude::*;
 use crate::components;
 

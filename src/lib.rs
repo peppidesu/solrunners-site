@@ -12,6 +12,7 @@ pub mod components;
 pub mod error;
 pub mod router;
 pub mod scss;
+pub mod db;
 
 /// Path to the res directory
 pub static RES_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/res");
