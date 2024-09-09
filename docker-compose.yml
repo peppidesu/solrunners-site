@@ -1,29 +1,22 @@
 services:
   db:
     container_name: solrunners-site-db
-    image: mysql:5.7
+    image: couchdb:latest
     environment:
-      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/dbpasswd
-      MYSQL_DATABASE: default
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=dikkedraak
     ports:
-      - "3306:3306"
-    secrets:
-      - dbpasswd
+      - "5984:5984"    
   server:
     container_name: solrunners-site-server
     depends_on: [db]
     build: .
     environment:
-      - DATABASE_URL=mysql://solrunners-site-db:3306/default
-      - DATABASE_PASSWORD_FILE=/run/secrets/dbpasswd
+      - COUCHDB_URL=http://solrunners-site-db:5984
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=dikkedraak
     ports:
-      - "8000:8000"
-    secrets:
-      - dbpasswd
-
-secrets:
-  dbpasswd:
-    file: ./secrets/dbpasswd
+      - "8000:8000"    
 
 
 

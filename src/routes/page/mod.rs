@@ -1,3 +1,6 @@
+use rocket::futures::TryFutureExt;
+use rocket::State;
+
 use crate::prelude::*;
 use crate::routes::prelude::*;
 
@@ -11,9 +14,13 @@ pub fn router() -> Router {
 
 /// Home page endpoint
 #[get("/")]
-fn home() -> Result<String, status::Custom<&'static str>> {
+async fn home(db: &State<DbClient>) -> Result<String, status::Custom<&'static str>> {
     let mut ctx = TeraContext::new();
     ctx.insert("time", &chrono::Local::now().format("%H:%M:%S").to_string());
+
+    let test_data = db.client.list_dbs().await
+        .map_err(|_| status::Custom(Status::InternalServerError, "Failed to list databases"))?;
+    ctx.insert("test_data", &format!("{:?}", test_data));
     
     let content = template.render("pages/home.html", &ctx)
         .handle_tera_error()?;

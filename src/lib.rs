@@ -4,6 +4,8 @@
 
 #[macro_use] extern crate rocket;
 
+use std::sync::Arc;
+
 use lazy_static::lazy_static;
 use tera::Tera;
 
@@ -14,6 +16,9 @@ pub mod router;
 pub mod scss;
 pub mod db;
 
+pub struct DbClient {
+    pub client: Arc<couch_rs::Client>,           
+}
 /// Path to the res directory
 pub static RES_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/res");
 
@@ -36,10 +41,11 @@ pub mod prelude {
         template,
         RES_PATH,
         router::{Router, MountRouter},
+        DbClient,
     };
     pub use tera::{
         Tera,
         Context as TeraContext
-    };       
+    };           
 }
 
